@@ -16,11 +16,6 @@ return new class extends Migration
                 ->constrained()
                 ->restrictOnDelete();
 
-            $table->foreignId('customer_group_id')
-                ->nullable()
-                ->constrained()
-                ->nullOnDelete();
-
             $table->string('code')->unique();
             $table->string('name');
             $table->string('phone', 20)->nullable();
