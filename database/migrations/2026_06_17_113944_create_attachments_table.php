@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('tenant_id')
                 ->constrained()
                 ->cascadeOnDelete();
+            $table->index('tenant_id');
 
             // Tạo sẵn 2 trường 'attachable_type' và 'attachable_id' kèm index kết hợp của Laravel
             // gọi là Quan hệ đa hình - Polymorphic Relation
