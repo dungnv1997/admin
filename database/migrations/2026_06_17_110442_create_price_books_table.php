@@ -11,6 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //Nhiều bảng giá khác nhau.
+        /*
+        Giá lẻ
+        Giá sỉ
+        Giá VIP
+        Giá Đại lý
+        */
         Schema::create('price_books', function (Blueprint $table) {
             $table->id();
 

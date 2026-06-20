@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Chi nhánh nào đang còn bao nhiêu hàng
         Schema::create('inventories', function (Blueprint $table) {
 
             $table->id();
@@ -26,8 +27,14 @@ return new class extends Migration
             $table->foreignId('product_variant_id')
                 ->constrained()
                 ->cascadeOnDelete();
-
+            //Tồn kho thực tế
             $table->decimal('quantity', 18, 2)->default(0);
+            //Đã giữ cho đơn hàng nhưng chưa xuất kho
+            $table->decimal('reserved_quantity', 18, 2)
+                ->default(0);
+            //Có thể bán
+            $table->decimal('available_quantity', 18, 2)
+                ->default(0);
 
             $table->timestamps();
 

@@ -21,7 +21,35 @@ return new class extends Migration
 
             $table->string('name');
 
+            $table->string('code')
+                ->nullable();
+
+            $table->string('logo')
+                ->nullable();
+
+            $table->text('description')
+                ->nullable();
+
+            $table->boolean('status')
+                ->default(true);
+
             $table->timestamps();
+
+            $table->softDeletes();
+
+            // Hãy sửa lại phần unique như sau:
+            $table->unique([
+                'tenant_id',
+                'name',
+                'deleted_at' // Thêm cột này vào để không bị lỗi khi tạo lại thương hiệu đã xóa
+            ]);
+
+            // Hãy sửa lại phần unique như sau:
+            $table->unique([
+                'tenant_id',
+                'code',
+                'deleted_at' // Thêm cột này vào để không bị lỗi khi tạo lại thương hiệu đã xóa
+            ]);
         });
     }
 
