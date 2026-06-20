@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //Kiểm kho / điều chỉnh tồn.
         Schema::create('stock_adjustments', function (Blueprint $table) {
             $table->id();
 

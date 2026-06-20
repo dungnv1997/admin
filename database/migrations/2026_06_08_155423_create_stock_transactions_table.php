@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Mọi nhập/xuất đều ghi vào đây.
         Schema::create('stock_transactions', function (Blueprint $table) {
             $table->id();
 
