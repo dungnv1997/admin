@@ -21,6 +21,13 @@ return new class extends Migration
 
             $table->string('name');
 
+            // Mô tả chi tiết chức năng của cấu hình này
+            $table->text('description')
+                ->nullable();
+
+            $table->boolean('status')
+                ->default(true);
+
             $table->decimal('discount_percent', 5, 2)
                 ->default(0);
 

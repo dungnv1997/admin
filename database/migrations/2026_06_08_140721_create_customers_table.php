@@ -11,12 +11,18 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
 
-            // 🛡️ SỬA THÀNH restrictOnDelete: Bảo vệ thông tin khách hàng và công nợ
+            // ✅ ĐÃ SỬA: Thêm nullable() để nullOnDelete() hoạt động được
+            $table->foreignId('customer_group_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+
             $table->foreignId('tenant_id')
                 ->constrained()
                 ->restrictOnDelete();
 
-            $table->string('code')->unique();
+            // ✅ ĐÃ SỬA: Bỏ ->unique() ở đây để tránh trùng mã giữa các Tenant khác nhau
+            $table->string('code');
             $table->string('name');
             $table->string('phone', 20)->nullable();
             $table->string('email')->nullable();
@@ -24,7 +30,6 @@ return new class extends Migration
             $table->date('birthday')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
 
-            // Tiền tệ và điểm thưởng (Rất chuẩn)
             $table->decimal('debt_balance', 18, 2)->default(0);
             $table->decimal('total_sales', 18, 2)->default(0);
             $table->integer('loyalty_points')->default(0);
@@ -32,15 +37,18 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
-            /// 🚀 Tốc độ tối đa khi tìm kiếm theo Số điện thoại của từng Tenant
+            // ================= INDEXES & CONSTRAINTS =================
+
+            // ✅ ĐÃ SỬA: Đảm bảo mã khách hàng là duy nhất TRONG CÙNG MỘT TENANT
+            $table->unique(['tenant_id', 'code']);
+
+            // 🚀 Tốc độ tối đa khi tìm kiếm theo Số điện thoại của từng Tenant
             $table->index(['tenant_id', 'phone']);
 
             // 🚀 Tốc độ tối đa khi tìm kiếm theo Tên của từng Tenant
             $table->index(['tenant_id', 'name']);
-
-            // 💡 Khuyên dùng: Nên thêm xóa mềm để khi xóa khách hàng không bị mất dữ liệu vĩnh viễn
-            $table->softDeletes();
         });
     }
 
