@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\Eloquent\Model;
+
 interface BaseRepositoryInterface
 {
     public function all();
@@ -9,4 +11,5 @@ interface BaseRepositoryInterface
     public function create(array $data);
     public function update($id, array $data);
     public function delete($id);
+    public function detail(Model $model, $relations = []);
 }

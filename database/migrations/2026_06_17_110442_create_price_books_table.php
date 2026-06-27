@@ -42,6 +42,7 @@ return new class extends Migration
 
             // Tạo index kết hợp để tối ưu các câu lệnh tìm kiếm: WHERE tenant_id = X AND status = Y
             $table->index(['tenant_id', 'status']);
+            $table->unique(['tenant_id', 'id']);
         });
     }
 

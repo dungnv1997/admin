@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +13,10 @@ use App\Http\Controllers\UserController;
 |
 */
 
-
-Route::apiResource('users', UserController::class);
-// Route::apiResource('videos', VideoController::class);
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::domain('{tenant_code}.kiot.test')
+    ->middleware('tenant.discovery')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::middleware('guest:api')->post('login', 'UserController@login');
+        Route::middleware('auth:api')->apiResource('users', 'UserController');
+    });
