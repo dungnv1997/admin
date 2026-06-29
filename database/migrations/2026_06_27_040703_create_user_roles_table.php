@@ -11,24 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('branches', function (Blueprint $table) {
+        Schema::create('user_roles', function (Blueprint $table) {
+
             $table->id();
 
-            $table->foreignId('tenant_id')
+            $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->string('name');
-
-            $table->text('address')->nullable();
-
-            $table->string('phone')->nullable();
-
-            $table->boolean('status')->default(true);
+            $table->foreignId('role_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->timestamps();
 
-            $table->unique(['tenant_id', 'id']);
+            $table->unique([
+                'user_id',
+                'role_id'
+            ]);
         });
     }
 
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('branches');
+        Schema::dropIfExists('user_roles');
     }
 };

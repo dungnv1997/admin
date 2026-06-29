@@ -26,11 +26,6 @@ class Role extends Model
         return $this->belongsTo(Tenant::class);
     }
 
-    public function users(): HasMany
-    {
-        return $this->hasMany(User::class);
-    }
-
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -39,5 +34,13 @@ class Role extends Model
             'role_id',
             'permission_id'
         );
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'user_roles'
+        )->withTimestamps();
     }
 }

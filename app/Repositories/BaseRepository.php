@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Exceptions\ResourceNotFoundException;
+use App\Constants\ErrorMessage;
 
 class BaseRepository implements BaseRepositoryInterface
 {
@@ -72,12 +74,38 @@ class BaseRepository implements BaseRepositoryInterface
     public function update($id, array $data)
     {
         $model = $this->find($id);
+
+        if (!$model) {
+            throw new ResourceNotFoundException(ErrorMessage::RESOURCE_NOT_FOUND);
+        }
+
         $model->update($data);
         return $model;
     }
 
     public function delete($id)
     {
-        return $this->model->destroy($id);
+        $deleted = $this->model->destroy($id);
+
+        if (!$deleted) {
+            throw new ResourceNotFoundException(ErrorMessage::RESOURCE_NOT_FOUND);
+        }
+
+        return $deleted;
+    }
+    /**
+     * Get model detail.
+     *
+     * @param Model $entity
+     *
+     * @return Model
+     */
+    public function detail(Model $entity, $relations = [])
+    {
+        if (count($relations)) {
+            return $entity->load($relations);
+        }
+
+        return $entity;
     }
 }

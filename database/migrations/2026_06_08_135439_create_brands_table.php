@@ -31,7 +31,7 @@ return new class extends Migration
                 ->nullable();
 
             $table->boolean('status')
-                ->default(true);
+                ->default(false);
 
             $table->timestamps();
 
@@ -50,6 +50,8 @@ return new class extends Migration
                 'code',
                 'deleted_at' // Thêm cột này vào để không bị lỗi khi tạo lại thương hiệu đã xóa
             ]);
+
+            $table->unique(['tenant_id', 'id']);
         });
     }
 

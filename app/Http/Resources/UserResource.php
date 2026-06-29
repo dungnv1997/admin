@@ -12,8 +12,22 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'created_at' => $this->created_at->format('Y-m-d'),
-            'updated_at' => $this->updated_at->format('Y-m-d'),
+
+            'tenant' => $this->whenLoaded('tenant'),
+
+            'branch' => $this->whenLoaded('branch'),
+
+
+            // 'roles' => RoleResource::collection(
+            //     $this->whenLoaded('roles')
+            // ),
+
+            // 'permissions' => PermissionResource::collection(
+            //     $this->whenLoaded('permissions')
+            // ),
+
+            'token' => $this->api_token,
+            'token_type' => 'Bearer',
         ];
     }
 }

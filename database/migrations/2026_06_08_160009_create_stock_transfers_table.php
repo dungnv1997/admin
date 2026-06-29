@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //Chuyển kho giữa chi nhánh.
         Schema::create('stock_transfers', function (Blueprint $table) {
             $table->id();
 
