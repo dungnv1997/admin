@@ -27,4 +27,16 @@ class UserService extends BaseService
     {
         return $this->userRepository->lists($data);
     }
+
+    /**
+     * Update Token.
+     *
+     * @param array $data
+     *
+     * @return any
+     */
+    public function updateToken($data)
+    {
+        return $this->userRepository->updateToken($data);
+    }
 }

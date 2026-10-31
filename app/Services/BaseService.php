@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\BaseRepositoryInterface;
+use Illuminate\Database\Eloquent\Model;
 
 class BaseService
 {
@@ -36,5 +37,17 @@ class BaseService
     public function delete($id)
     {
         return $this->repository->delete($id);
+    }
+
+    /**
+     * Get model detail.
+     *
+     * @param Model $entity
+     *
+     * @return Model
+     */
+    public function detail(Model $entity, $relations = [])
+    {
+        return $this->repository->detail($entity, $relations);
     }
 }

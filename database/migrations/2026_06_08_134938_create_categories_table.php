@@ -30,7 +30,9 @@ return new class extends Migration
 
             $table->text('description')->nullable();
 
-            $table->boolean('status')->default(true);
+            $table->boolean('status')->default(false);
+
+            $table->unique(['tenant_id', 'id']);
 
             $table->timestamps();
         });

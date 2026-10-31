@@ -20,7 +20,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      */
     public function search($query, $column, $data)
     {
-       
+
         switch ($column) {
             case 'id':
             case 'agency_id':
@@ -28,10 +28,21 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             case 'name':
                 return $query->where($column, $data);
                 break;
-            
+
             default:
                 return $query;
                 break;
         }
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return User
+     */
+    public function updateToken(User $user)
+    {
+        // dd($user);
+        $user->api_token = $user->createToken($user->email)->accessToken;
     }
 }

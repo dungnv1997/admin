@@ -6,6 +6,11 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use App\Http\Requests\AuthRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Utils\ApiResponse;
+use App\Constants\ErrorMessage;
+
 
 /**
  * @OA\Info(
@@ -22,6 +27,51 @@ class UserController extends Controller
     {
         $this->userService = $userService;
     }
+
+    /**
+     * Login user.
+     *
+     * @param AuthRequest $request
+     * @return UserResource
+     *
+     *  @OA\Post(
+     *      path="/api/login",
+     *      tags={"User"},
+     *      operationId="loginUser",
+     *      summary="Login User",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/auth"),
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Logged in",
+     *      ),
+     *  )
+     */
+    public function login(AuthRequest $request)
+    {
+        $tenantId = config('app.current_tenant_id');
+        $credentials = [
+            'tenant_id' => $tenantId,
+            'email'     => $request->email,
+            'password'  => $request->password,
+        ];
+
+        if (!auth()->attempt($credentials)) {
+            return ApiResponse::unauthorized(ErrorMessage::INVALID_CREDENTIALS);
+        }
+
+        $user = $this->userService->detail(auth()->user(), [
+            'tenant',
+            'branch',
+            'roles.permissions'
+        ]);
+        $this->userService->updateToken($user);
+
+        return new UserResource($user);
+    }
+
 
     /**
      * @OA\Get(
@@ -55,6 +105,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
+        $data['tenant_id'] = config('app.current_tenant_id');
         $data['password'] = bcrypt($request->password);
         $user = $this->userService->create($data);
 
@@ -79,7 +130,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return new UserResource($this->userService->getById($id));
+        $user = $this->userService->getById($id);
+        if (!$user) {
+            return ApiResponse::notFound(ErrorMessage::USER_NOT_FOUND);
+        }
+        return new UserResource($user->load(['tenant', 'branch', 'roles.permissions']));
     }
 
     /**
@@ -102,9 +157,16 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function update(StoreUserRequest $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $user = $this->userService->update($id, $request->validated());
+        $data = $request->validated();
+        if (isset($data['password']) && !empty($data['password'])) {
+            $data['password'] = bcrypt($data['password']);
+        } else {
+            unset($data['password']);
+        }
+        $user = $this->userService->update($id, $data);
+
         return new UserResource($user);
     }
 
